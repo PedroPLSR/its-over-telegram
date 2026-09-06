@@ -1,2 +1,16 @@
 .cursor/
 .specify/
+.env
+.env.*
+!.env.example
+node_modules/
+data/
+dist/
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+coverage/

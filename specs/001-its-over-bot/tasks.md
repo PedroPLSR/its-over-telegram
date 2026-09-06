@@ -28,12 +28,12 @@
 
 **Purpose**: Scaffold Node/TypeScript package and ignore secrets/runtime data
 
-- [ ] T001 Create directories `src/handlers/`, `src/services/`, `src/storage/`, `tests/`, and `data/` per `specs/001-its-over-bot/plan.md`
-- [ ] T002 Initialize `package.json` as ESM (`"type": "module"`) with scripts `dev`, `build`, `start`, `test` and dependencies `grammy`, `dotenv`, `croner`, `zod` plus devDependencies `typescript`, `tsx`, `vitest`, `@types/node`
-- [ ] T003 [P] Add `tsconfig.json` for Node 22 ESM (strict, `outDir` `dist`, `rootDir` `src`)
-- [ ] T004 [P] Update `.gitignore` to include `.env`, `node_modules/`, `data/`, `dist/` (keep existing entries as needed)
-- [ ] T005 [P] Add `.env.example` with placeholders `BOT_TOKEN`, `GIF_URL`, `ALLOWLIST_CHAT_IDS`, `STATE_PATH=data/state.json` per `specs/001-its-over-bot/contracts/env-config.md`
-- [ ] T006 [P] Add `vitest.config.ts` (Node environment, `tests/**/*.test.ts`)
+- [x] T001 Create directories `src/handlers/`, `src/services/`, `src/storage/`, `tests/`, and `data/` per `specs/001-its-over-bot/plan.md`
+- [x] T002 Initialize `package.json` as ESM (`"type": "module"`) with scripts `dev`, `build`, `start`, `test` and dependencies `grammy`, `dotenv`, `croner`, `zod` plus devDependencies `typescript`, `tsx`, `vitest`, `@types/node`
+- [x] T003 [P] Add `tsconfig.json` for Node 22 ESM (strict, `outDir` `dist`, `rootDir` `src`)
+- [x] T004 [P] Update `.gitignore` to include `.env`, `node_modules/`, `data/`, `dist/` (keep existing entries as needed)
+- [x] T005 [P] Add `.env.example` with placeholders `BOT_TOKEN`, `GIF_URL`, `ALLOWLIST_CHAT_IDS`, `STATE_PATH=data/state.json` per `specs/001-its-over-bot/contracts/env-config.md`
+- [x] T006 [P] Add `vitest.config.ts` (Node environment, `tests/**/*.test.ts`)
 
 **Checkpoint**: `npm install` succeeds; project layout matches plan
 
@@ -45,10 +45,10 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete
 
-- [ ] T007 Implement env load + zod schema in `src/config.ts` (`BOT_TOKEN`, `GIF_URL`, `ALLOWLIST_CHAT_IDS` → `number[]`, optional `STATE_PATH`; fail fast on invalid config; never log token) per `contracts/env-config.md`
-- [ ] T008 Implement atomic JSON read/write for `BotState` (`version`, `gifFileId`, `presence`, `lastWeeklyRunDate`) in `src/storage/state-store.ts` per `data-model.md`
-- [ ] T009 Implement `isEligibleChat({ chatId, chatType, allowlist, presence })` in `src/services/eligibility.ts` (allowlist ∩ `group`|`supergroup` ∩ present; missing presence record → optimistic `true`; DMs never eligible)
-- [ ] T010 [P] Add Vitest coverage for eligibility rules in `tests/eligibility.test.ts` (allowlisted group present; non-allowlisted; private ignored; absent blocks; optimistic default)
+- [x] T007 Implement env load + zod schema in `src/config.ts` (`BOT_TOKEN`, `GIF_URL`, `ALLOWLIST_CHAT_IDS` → `number[]`, optional `STATE_PATH`; fail fast on invalid config; never log token) per `contracts/env-config.md`
+- [x] T008 Implement atomic JSON read/write for `BotState` (`version`, `gifFileId`, `presence`, `lastWeeklyRunDate`) in `src/storage/state-store.ts` per `data-model.md`
+- [x] T009 Implement `isEligibleChat({ chatId, chatType, allowlist, presence })` in `src/services/eligibility.ts` (allowlist ∩ `group`|`supergroup` ∩ present; missing presence record → optimistic `true`; DMs never eligible)
+- [x] T010 [P] Add Vitest coverage for eligibility rules in `tests/eligibility.test.ts` (allowlisted group present; non-allowlisted; private ignored; absent blocks; optimistic default)
 
 **Checkpoint**: Foundation ready — story implementation can begin
 
@@ -64,16 +64,16 @@
 
 > Write tests first where practical; ensure they fail before full implementation
 
-- [ ] T011 [P] [US1] Add Vitest for GIF send strategy (URL first, persist `file_id`, prefer `file_id`, invalid `file_id` → clear + URL fallback) in `tests/gif-sender.test.ts` with mocked `sendAnimation`
-- [ ] T012 [P] [US1] Add Vitest proving weekly scheduler has **no catch-up/misfire replay** (missed Sunday not sent on startup; only next future Sunday 18:00 America/Sao_Paulo) in `tests/weekly-scheduler.test.ts`
+- [x] T011 [P] [US1] Add Vitest for GIF send strategy (URL first, persist `file_id`, prefer `file_id`, invalid `file_id` → clear + URL fallback) in `tests/gif-sender.test.ts` with mocked `sendAnimation`
+- [x] T012 [P] [US1] Add Vitest proving weekly scheduler has **no catch-up/misfire replay** (missed Sunday not sent on startup; only next future Sunday 18:00 America/Sao_Paulo) in `tests/weekly-scheduler.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Implement `sendGifToChat` in `src/services/gif-sender.ts` using grammY `api.sendAnimation` per `contracts/telegram-send-animation.md` (URL ↔ `file_id`, persist `gifFileId` via `state-store`; limited transient retries; do not invent media)
-- [ ] T014 [US1] Implement Sunday 18:00 `America/Sao_Paulo` job with `croner` in `src/services/weekly-scheduler.ts` (no misfire recovery; optional `lastWeeklyRunDate` duplicate guard only; iterate eligible allowlisted chats and call `gif-sender`; one chat failure must not cancel others)
-- [ ] T015 [US1] Create grammY bot factory in `src/bot.ts` (long polling only; `allowed_updates` include `message` and `my_chat_member`; no webhook setup)
-- [ ] T016 [US1] Wire boot in `src/index.ts`: load `config`, init `state-store`, create bot, start `weekly-scheduler`, call `bot.start()`; exit non-zero if config invalid
-- [ ] T017 [US1] Export a testable `runWeeklySend(deps)` helper from `src/services/weekly-scheduler.ts` (or adjacent module) so Vitest can invoke fan-out without waiting for real Sunday
+- [x] T013 [US1] Implement `sendGifToChat` in `src/services/gif-sender.ts` using grammY `api.sendAnimation` per `contracts/telegram-send-animation.md` (URL ↔ `file_id`, persist `gifFileId` via `state-store`; limited transient retries; do not invent media)
+- [x] T014 [US1] Implement Sunday 18:00 `America/Sao_Paulo` job with `croner` in `src/services/weekly-scheduler.ts` (no misfire recovery; optional `lastWeeklyRunDate` duplicate guard only; iterate eligible allowlisted chats and call `gif-sender`; one chat failure must not cancel others)
+- [x] T015 [US1] Create grammY bot factory in `src/bot.ts` (long polling only; `allowed_updates` include `message` and `my_chat_member`; no webhook setup)
+- [x] T016 [US1] Wire boot in `src/index.ts`: load `config`, init `state-store`, create bot, start `weekly-scheduler`, call `bot.start()`; exit non-zero if config invalid
+- [x] T017 [US1] Export a testable `runWeeklySend(deps)` helper from `src/services/weekly-scheduler.ts` (or adjacent module) so Vitest can invoke fan-out without waiting for real Sunday
 
 **Checkpoint**: US1 MVP — weekly path works in tests; process can long-poll and schedule (manual Sunday validation optional)
 
