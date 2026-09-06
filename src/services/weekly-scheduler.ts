@@ -1,6 +1,7 @@
 import { Cron } from "croner";
 import { isEligibleChat, type ChatType } from "./eligibility.js";
 import type { StateStore } from "../storage/state-store.js";
+import { redactLogValue } from "../logging.js";
 
 export const WEEKLY_CRON = "0 18 * * 0";
 export const WEEKLY_TIMEZONE = "America/Sao_Paulo";
@@ -35,7 +36,7 @@ export async function runWeeklySend(
   const today = (deps.todaySaoPaulo ?? formatDateSaoPaulo)();
   const log = deps.log ?? ((message: string, error?: unknown) => {
     if (error !== undefined) {
-      console.error(message, error instanceof Error ? error.message : error);
+      console.error(message, redactLogValue(error));
     } else {
       console.info(message);
     }

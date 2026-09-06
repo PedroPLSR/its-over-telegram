@@ -87,13 +87,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Extend `tests/eligibility.test.ts` (or add `tests/its-over-handler.test.ts`) asserting `/itsOver` gate: human + eligible → allow; bot sender / ineligible → deny (no admin-role requirement)
+- [x] T018 [P] [US2] Extend `tests/eligibility.test.ts` (or add `tests/its-over-handler.test.ts`) asserting `/itsOver` gate: human + eligible → allow; bot sender / ineligible → deny (no admin-role requirement)
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Implement `/itsOver` handler in `src/handlers/its-over.ts` per `contracts/telegram-updates.md` (any human member; no admin check; ineligible → useful silence; call `gif-sender`)
-- [ ] T020 [US2] Register `itsOver` command handler on the bot in `src/bot.ts` (and ensure `src/index.ts` uses the registered bot)
-- [ ] T021 [US2] On startup in `src/index.ts` (or `src/bot.ts`), call `setMyCommands` with `{ command: "itsOver", description: "..." }` so Telegram clients show the command in eligible chats
+- [x] T019 [US2] Implement `/itsOver` handler in `src/handlers/its-over.ts` per `contracts/telegram-updates.md` (any human member; no admin check; ineligible → useful silence; call `gif-sender`)
+- [x] T020 [US2] Register `itsOver` command handler on the bot in `src/bot.ts` (and ensure `src/index.ts` uses the registered bot)
+- [x] T021 [US2] On startup in `src/index.ts` (or `src/bot.ts`), call `setMyCommands` with `{ command: "itsOver", description: "..." }` so Telegram clients show the command in eligible chats
 
 **Checkpoint**: US1 + US2 — manual GIF works in allowlisted groups; silence outside
 
@@ -107,14 +107,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T022 [P] [US3] Add Vitest for presence transitions in `tests/presence.test.ts` (optimistic default; join; leave/kicked; send_failure → absent; allowlist unchanged)
+- [x] T022 [P] [US3] Add Vitest for presence transitions in `tests/presence.test.ts` (optimistic default; join; leave/kicked; send_failure → absent; allowlist unchanged)
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Implement `my_chat_member` handler in `src/handlers/chat-member.ts` per `contracts/telegram-my-chat-member.md` (map status → `present`; persist via `state-store`; do not edit allowlist)
-- [ ] T024 [US3] Register `my_chat_member` handler in `src/bot.ts`
-- [ ] T025 [US3] Update `src/services/gif-sender.ts` to mark `present=false` (reason `send_failure`) on absence-proof Bot API errors; leave presence unchanged on transient network errors
-- [ ] T026 [US3] Confirm `src/config.ts` / docs: allowlist changes require env edit + process restart/reload only (no `/allow`/`/deny` handlers exist)
+- [x] T023 [US3] Implement `my_chat_member` handler in `src/handlers/chat-member.ts` per `contracts/telegram-my-chat-member.md` (map status → `present`; persist via `state-store`; do not edit allowlist)
+- [x] T024 [US3] Register `my_chat_member` handler in `src/bot.ts`
+- [x] T025 [US3] Update `src/services/gif-sender.ts` to mark `present=false` (reason `send_failure`) on absence-proof Bot API errors; leave presence unchanged on transient network errors
+- [x] T026 [US3] Confirm `src/config.ts` / docs: allowlist changes require env edit + process restart/reload only (no `/allow`/`/deny` handlers exist)
 
 **Checkpoint**: All three stories independently verifiable via Vitest + quickstart manual checks
 
@@ -124,10 +124,10 @@
 
 **Purpose**: Operator docs and repo hygiene for SC-006 (&lt; 30 min setup)
 
-- [ ] T027 [P] Align `specs/001-its-over-bot/quickstart.md` with actual scripts (`npm run dev` / `npm start` / `npm test`), `setMyCommands`, BotFather `/setjoingroups` Disable, `deleteWebhook` note, and silence rules
-- [ ] T028 [P] Add brief root `README.md` linking to `specs/001-its-over-bot/quickstart.md` and stating MVP scope / non-goals (no webhook, no admin commands, no Sunday catch-up)
-- [ ] T029 Ensure logs never print `BOT_TOKEN`; redacted error logging in `src/index.ts` / handlers
-- [ ] T030 Run `npm test` and a dry walkthrough of quickstart checklist (A–E) against a test bot when credentials are available
+- [x] T027 [P] Align `specs/001-its-over-bot/quickstart.md` with actual scripts (`npm run dev` / `npm start` / `npm test`), `setMyCommands`, BotFather `/setjoingroups` Disable, `deleteWebhook` note, and silence rules
+- [x] T028 [P] Add brief root `README.md` linking to `specs/001-its-over-bot/quickstart.md` and stating MVP scope / non-goals (no webhook, no admin commands, no Sunday catch-up)
+- [x] T029 Ensure logs never print `BOT_TOKEN`; redacted error logging in `src/index.ts` / handlers
+- [x] T030 Run `npm test` and a dry walkthrough of quickstart checklist (A–E) against a test bot when credentials are available
 
 ---
 

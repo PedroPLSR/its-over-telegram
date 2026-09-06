@@ -55,7 +55,11 @@ const envSchema = z.object({
 export type AppConfig = {
   botToken: string;
   gifUrl: string;
-  allowlistChatIds: number[];
+  /**
+   * Startup snapshot from ALLOWLIST_CHAT_IDS. Membership events only update
+   * presence; changing authorization requires editing env and restarting.
+   */
+  allowlistChatIds: readonly number[];
   statePath: string;
 };
 

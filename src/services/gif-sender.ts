@@ -20,6 +20,14 @@ function defaultSleep(ms: number): Promise<void> {
 
 function errorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "description" in error &&
+    typeof (error as { description: unknown }).description === "string"
+  ) {
+    return (error as { description: string }).description;
+  }
   return String(error);
 }
 
@@ -53,6 +61,21 @@ export function isTransientSendError(error: unknown): boolean {
     message.includes("socket hang up") ||
     message.includes("network") ||
     message.includes("temporarily unavailable")
+  );
+}
+
+/**
+ * Errors that prove the bot cannot be present in the target chat.
+ * A generic 403 is intentionally insufficient: it can also mean the bot is
+ * still a member but lacks permission to post.
+ */
+export function isAbsenceProofSendError(error: unknown): boolean {
+  const message = errorMessage(error).toLowerCase();
+  return (
+    message.includes("bot was kicked") ||
+    message.includes("bot is not a member") ||
+    message.includes("bot was blocked") ||
+    message.includes("chat not found")
   );
 }
 
@@ -97,6 +120,13 @@ export async function sendGifToChat(
       if (isTransientSendError(error) && attempt < maxAttempts) {
         await sleep(500 * attempt);
         continue;
+      }
+
+      if (isAbsenceProofSendError(error)) {
+        await deps.stateStore.setPresence(chatId, {
+          present: false,
+          reason: "send_failure",
+        });
       }
 
       throw error;

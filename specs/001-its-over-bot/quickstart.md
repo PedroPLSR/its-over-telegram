@@ -14,7 +14,8 @@
 
 1. Open [@BotFather](https://t.me/BotFather) → `/newbot` → choose name/username.
 2. Copy the **token** (becomes `BOT_TOKEN`). Do not share or commit it.
-3. **Do not** advertise the username publicly.
+3. Run `/setjoingroups` → select the bot → leave it **Enabled** temporarily so you can add it to the intended group.
+4. **Do not** advertise the username publicly.
 
 ## 2. Add bot to the group, then lock joins
 
@@ -28,24 +29,32 @@
 Common approaches:
 
 - Add a temporary “ID bot”, or
-- With this bot running and logging updates, send a message and read `chat.id`, or
-- Use `getUpdates` once while the bot is in the group.
+- Temporarily call `getUpdates` once before starting this bot.
 
 Put that ID in `ALLOWLIST_CHAT_IDS` (groups/supergroups only; DMs are ignored even if listed).
 
 ## 4. Project setup
 
 ```bash
-# From repo root (after implementation exists)
+# From the repository root
 cp .env.example .env
 # Edit .env: BOT_TOKEN, GIF_URL, ALLOWLIST_CHAT_IDS
 
 npm install
-npm run build   # or npm run dev for tsx watch
+npm test
+npm run dev
+```
+
+`npm run dev` executes the TypeScript entrypoint directly. For a production-style run:
+
+```bash
+npm run build
 npm start
 ```
 
-Ensure `.gitignore` includes `.env`, `node_modules/`, and `data/`.
+Use either `npm run dev` or `npm start`, not both. On startup the app removes any existing webhook without dropping pending updates, registers `/itsover` with `setMyCommands`, starts the weekly scheduler, and begins long polling.
+
+`.env`, `node_modules/`, `data/`, and `dist/` are already ignored by Git.
 
 ### Example `.env`
 
@@ -67,6 +76,8 @@ STATE_PATH=data/state.json
 | E | Remove bot from group, wait for membership update, `/itsOver` from that chat | No send; presence marked absent |
 | F | Sunday 18:00 America/Sao_Paulo with process running | GIF to all eligible chats (or use a test hook / clock mock in tests) |
 
+The bot is deliberately silent for DMs, non-allowlisted chats, commands from bots, unknown commands/messages, and `/itsOver` when it is absent or ineligible. It does not send help, denial, or error replies.
+
 ## 6. Weekly schedule notes
 
 - Fire time: **Sunday 18:00** `America/Sao_Paulo` only while the process is up.
@@ -77,7 +88,7 @@ STATE_PATH=data/state.json
 
 | Symptom | Check |
 |---------|--------|
-| Polling errors / no updates | Delete webhook: Bot API `deleteWebhook` for this token |
+| Polling errors / no updates | The app calls Bot API `deleteWebhook` on every startup. If troubleshooting manually, call `deleteWebhook` securely without printing or storing the token in logs/shell history. |
 | `/itsOver` ignored in group | BotFather privacy / group permissions |
 | GIF never sends | `GIF_URL` publicly reachable; chat ID allowlisted; chat is group/supergroup |
 | Token in logs | Redact; never print `BOT_TOKEN` |
