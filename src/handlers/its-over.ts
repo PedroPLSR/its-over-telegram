@@ -3,7 +3,10 @@ import {
   isEligibleChat,
   type ChatType,
 } from "../services/eligibility.js";
-import { sendGifToChat } from "../services/gif-sender.js";
+import {
+  calculateHoursUntilNextGif,
+  formatCountdownMessage,
+} from "../services/countdown.js";
 import type { StateStore } from "../storage/state-store.js";
 import { redactLogValue } from "../logging.js";
 
@@ -35,17 +38,19 @@ export function canRunItsOver(input: ItsOverGateInput): boolean {
 export type ItsOverHandlerDeps = {
   allowlist: readonly number[];
   stateStore: StateStore;
-  gifUrl: string;
+  now?: () => Date;
 };
 
 /**
- * Register `/itsOver`: eligible human → same GIF as weekly; else useful silence.
+ * Register `/itsOver`: eligible human → countdown text; else useful silence.
  * Matches `/itsover` and `/itsover@BotName` by text (not only Telegram entities).
  */
 export function registerItsOverHandler(
   bot: Bot,
   deps: ItsOverHandlerDeps,
 ): void {
+  const now = deps.now ?? (() => new Date());
+
   bot.on("message:text", async (ctx, next) => {
     const text = ctx.message.text.trim();
     const match = /^\/itsover(?:@(\w+))?$/i.exec(text);
@@ -87,18 +92,23 @@ export function registerItsOverHandler(
       return;
     }
 
+    let message: string;
     try {
-      console.log(`itsOver sending to chatId=${chat.id}`);
-      await sendGifToChat(chat.id, {
-        sendAnimation: (chatId, animation) =>
-          ctx.api.sendAnimation(chatId, animation),
-        stateStore: deps.stateStore,
-        gifUrl: deps.gifUrl,
-      });
-      console.log(`itsOver sent ok chatId=${chat.id}`);
+      const hoursRemaining = calculateHoursUntilNextGif(now());
+      message = formatCountdownMessage(hoursRemaining);
     } catch (error) {
       console.error(
-        `itsOver send failed for chat ${chat.id}: ${redactLogValue(error)}`,
+        `itsOver countdown failed for chat ${chat.id}: ${redactLogValue(error)}`,
+      );
+      return;
+    }
+
+    try {
+      await ctx.reply(message);
+      console.log(`itsOver countdown sent ok chatId=${chat.id}`);
+    } catch (error) {
+      console.error(
+        `itsOver reply failed for chat ${chat.id}: ${redactLogValue(error)}`,
       );
     }
   });

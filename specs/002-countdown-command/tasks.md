@@ -30,8 +30,8 @@
 
 **Purpose**: Confirm the implemented feature 001 baseline before applying the delta; do not scaffold or install a replacement stack.
 
-- [ ] T001 Run the existing test/build baseline from `package.json` and record any pre-existing failures before changing `src/` or `tests/`
-- [ ] T002 [P] **NO-OP / VERIFY UNCHANGED** confirm the current responsibilities and exported schedule constants in `src/services/weekly-scheduler.ts`, `src/services/gif-sender.ts`, `src/services/eligibility.ts`, `src/storage/state-store.ts`, `src/config.ts`, and `src/handlers/chat-member.ts`
+- [x] T001 Run the existing test/build baseline from `package.json` and record any pre-existing failures before changing `src/` or `tests/`
+- [x] T002 [P] **NO-OP / VERIFY UNCHANGED** confirm the current responsibilities and exported schedule constants in `src/services/weekly-scheduler.ts`, `src/services/gif-sender.ts`, `src/services/eligibility.ts`, `src/storage/state-store.ts`, `src/config.ts`, and `src/handlers/chat-member.ts`
 
 **Checkpoint**: Existing tests/build status is known and the files whose behavior must remain unchanged are identified.
 
@@ -55,16 +55,16 @@
 
 > Write these tests first and confirm the new assertions fail before implementation.
 
-- [ ] T003 [P] [US1] Create table-driven countdown tests in `tests/countdown.test.ts` covering an ordinary weekday, week/month/year rollover, 2h01m → 3, less than 1h → 1, Sunday 17:59:59.999 → 1, Sunday 18:00:00.000 → 168, Sunday 18:00:59.999 → 168, Sunday 18:01 → 168, invalid `Date`, strictly-future target, and independence from the host timezone
-- [ ] T004 [P] [US1] Extend `tests/its-over-handler.test.ts` with an eligible-group handler fixture using injected `now: () => Date`, asserting one exact text reply `Ei, calma.. Faltam X horas pro Gif` for a deterministic X and preserving existing command parsing/bot-mention behavior
+- [x] T003 [P] [US1] Create table-driven countdown tests in `tests/countdown.test.ts` covering an ordinary weekday, week/month/year rollover, 2h01m → 3, less than 1h → 1, Sunday 17:59:59.999 → 1, Sunday 18:00:00.000 → 168, Sunday 18:00:59.999 → 168, Sunday 18:01 → 168, invalid `Date`, strictly-future target, and independence from the host timezone
+- [x] T004 [P] [US1] Extend `tests/its-over-handler.test.ts` with an eligible-group handler fixture using injected `now: () => Date`, asserting one exact text reply `Ei, calma.. Faltam X horas pro Gif` for a deterministic X and preserving existing command parsing/bot-mention behavior
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Implement pure next-occurrence, `Math.ceil` hours calculation, invalid/non-future target guards, and fixed message formatting in `src/services/countdown.ts` using Croner with `WEEKLY_CRON` and `WEEKLY_TIMEZONE` from `src/services/weekly-scheduler.ts` and no fixed UTC offset
-- [ ] T006 [US1] Refactor `src/handlers/its-over.ts` to remove the `gif-sender` import and `gifUrl` dependency, add optional `now: () => Date`, preserve `canRunItsOver`, and reply only with the formatted countdown while logging redacted calculation/reply failures without media fallback
-- [ ] T007 [US1] Remove `gifUrl` from the `itsOver` dependency wiring while retaining GIF configuration exclusively in weekly scheduler wiring in `src/index.ts`
-- [ ] T008 [P] [US1] Change only the `/itsover` BotFather description to countdown-oriented wording while preserving command name, scopes, and allowed updates in `src/bot.ts`
-- [ ] T009 [US1] Run and fix the focused US1 suites in `tests/countdown.test.ts` and `tests/its-over-handler.test.ts`, then confirm the TypeScript build defined in `package.json` succeeds
+- [x] T005 [US1] Implement pure next-occurrence, `Math.ceil` hours calculation, invalid/non-future target guards, and fixed message formatting in `src/services/countdown.ts` using Croner with `WEEKLY_CRON` and `WEEKLY_TIMEZONE` from `src/services/weekly-scheduler.ts` and no fixed UTC offset
+- [x] T006 [US1] Refactor `src/handlers/its-over.ts` to remove the `gif-sender` import and `gifUrl` dependency, add optional `now: () => Date`, preserve `canRunItsOver`, and reply only with the formatted countdown while logging redacted calculation/reply failures without media fallback
+- [x] T007 [US1] Remove `gifUrl` from the `itsOver` dependency wiring while retaining GIF configuration exclusively in weekly scheduler wiring in `src/index.ts`
+- [x] T008 [P] [US1] Change only the `/itsover` BotFather description to countdown-oriented wording while preserving command name, scopes, and allowed updates in `src/bot.ts`
+- [x] T009 [US1] Run and fix the focused US1 suites in `tests/countdown.test.ts` and `tests/its-over-handler.test.ts`, then confirm the TypeScript build defined in `package.json` succeeds
 
 **Checkpoint**: US1 MVP is independently demonstrable: eligible `/itsOver` returns the exact countdown text for all required boundaries and the command has no GIF dependency.
 
@@ -78,11 +78,11 @@
 
 ### Tests and Contract Boundary for User Story 2
 
-- [ ] T010 [US2] Add handler contract-boundary assertions in `tests/its-over-handler.test.ts` that eligible `/itsOver` at Sunday 18:00:00 replies with X = 168, never calls `ctx.api.sendAnimation`, and never falls back to animation when countdown calculation or `ctx.reply` fails
-- [ ] T011 [P] [US2] **NO-OP / VERIFY UNCHANGED** run `tests/weekly-scheduler.test.ts` and confirm future-only Sunday 18:00 `America/Sao_Paulo`, eligible fan-out, duplicate guard, failure isolation, and no-catch-up behavior remain green without production changes to `src/services/weekly-scheduler.ts`
-- [ ] T012 [P] [US2] **NO-OP / VERIFY UNCHANGED** run `tests/gif-sender.test.ts` and confirm URL/`file_id` fallback, persistence, transient retries, and absence-proof handling remain green without production changes to `src/services/gif-sender.ts`
-- [ ] T013 [US2] Audit and enforce the exclusive media path across `src/handlers/its-over.ts` and `src/index.ts`: `/itsOver` must contain no `gif-sender`, `gifUrl`, `sendGifToChat`, or `sendAnimation` path, while the weekly dependency assembly remains intact
-- [ ] T014 [US2] Run the combined boundary/regression suites in `tests/its-over-handler.test.ts`, `tests/weekly-scheduler.test.ts`, and `tests/gif-sender.test.ts` and verify behavior against `specs/002-countdown-command/contracts/weekly-gif-boundary.md`
+- [x] T010 [US2] Add handler contract-boundary assertions in `tests/its-over-handler.test.ts` that eligible `/itsOver` at Sunday 18:00:00 replies with X = 168, never calls `ctx.api.sendAnimation`, and never falls back to animation when countdown calculation or `ctx.reply` fails
+- [x] T011 [P] [US2] **NO-OP / VERIFY UNCHANGED** run `tests/weekly-scheduler.test.ts` and confirm future-only Sunday 18:00 `America/Sao_Paulo`, eligible fan-out, duplicate guard, failure isolation, and no-catch-up behavior remain green without production changes to `src/services/weekly-scheduler.ts`
+- [x] T012 [P] [US2] **NO-OP / VERIFY UNCHANGED** run `tests/gif-sender.test.ts` and confirm URL/`file_id` fallback, persistence, transient retries, and absence-proof handling remain green without production changes to `src/services/gif-sender.ts`
+- [x] T013 [US2] Audit and enforce the exclusive media path across `src/handlers/its-over.ts` and `src/index.ts`: `/itsOver` must contain no `gif-sender`, `gifUrl`, `sendGifToChat`, or `sendAnimation` path, while the weekly dependency assembly remains intact
+- [x] T014 [US2] Run the combined boundary/regression suites in `tests/its-over-handler.test.ts`, `tests/weekly-scheduler.test.ts`, and `tests/gif-sender.test.ts` and verify behavior against `specs/002-countdown-command/contracts/weekly-gif-boundary.md`
 
 **Checkpoint**: US1 + US2 prove that the command is text-only and the existing weekly job remains the sole GIF sender without scheduler behavior changes.
 
@@ -96,9 +96,9 @@
 
 ### Tests and Verification for User Story 3
 
-- [ ] T015 [US3] Extend handler-level cases in `tests/its-over-handler.test.ts` to assert useful silence for non-allowlisted chat, private chat, known-absent chat, bot sender, and missing context, plus a text countdown for an allowlisted group/supergroup with optimistic presence
-- [ ] T016 [P] [US3] **NO-OP / VERIFY UNCHANGED** run `tests/eligibility.test.ts` and `tests/presence.test.ts` and confirm no behavioral or schema changes are needed in `src/services/eligibility.ts`, `src/handlers/chat-member.ts`, `src/storage/state-store.ts`, or `src/config.ts`
-- [ ] T017 [US3] Run `tests/its-over-handler.test.ts`, `tests/eligibility.test.ts`, and `tests/presence.test.ts` together and verify silence/optimistic-presence behavior against `specs/002-countdown-command/contracts/telegram-countdown-command.md`
+- [x] T015 [US3] Extend handler-level cases in `tests/its-over-handler.test.ts` to assert useful silence for non-allowlisted chat, private chat, known-absent chat, bot sender, and missing context, plus a text countdown for an allowlisted group/supergroup with optimistic presence
+- [x] T016 [P] [US3] **NO-OP / VERIFY UNCHANGED** run `tests/eligibility.test.ts` and `tests/presence.test.ts` and confirm no behavioral or schema changes are needed in `src/services/eligibility.ts`, `src/handlers/chat-member.ts`, `src/storage/state-store.ts`, or `src/config.ts`
+- [x] T017 [US3] Run `tests/its-over-handler.test.ts`, `tests/eligibility.test.ts`, and `tests/presence.test.ts` together and verify silence/optimistic-presence behavior against `specs/002-countdown-command/contracts/telegram-countdown-command.md`
 
 **Checkpoint**: All three user stories are independently covered and retained privacy rules remain intact.
 
@@ -108,8 +108,8 @@
 
 **Purpose**: Validate the complete delta and ensure no out-of-scope behavior or unrelated production changes were introduced.
 
-- [ ] T018 [P] Dry-run the automated and structural checks documented in `specs/002-countdown-command/quickstart.md`, including exact fixed wording, no pluralization/minutes/seconds, countdown-oriented command description, and no GIF dependency in the handler
-- [ ] T019 Run the full test suite and TypeScript build from `package.json`, inspect the final diff, and confirm `src/services/weekly-scheduler.ts`, `src/services/gif-sender.ts`, `src/services/eligibility.ts`, `src/storage/state-store.ts`, `src/config.ts`, and `src/handlers/chat-member.ts` are unchanged except for a separately justified pre-existing defect
+- [x] T018 [P] Dry-run the automated and structural checks documented in `specs/002-countdown-command/quickstart.md`, including exact fixed wording, no pluralization/minutes/seconds, countdown-oriented command description, and no GIF dependency in the handler
+- [x] T019 Run the full test suite and TypeScript build from `package.json`, inspect the final diff, and confirm `src/services/weekly-scheduler.ts`, `src/services/gif-sender.ts`, `src/services/eligibility.ts`, `src/storage/state-store.ts`, `src/config.ts`, and `src/handlers/chat-member.ts` are unchanged except for a separately justified pre-existing defect
 
 ---
 

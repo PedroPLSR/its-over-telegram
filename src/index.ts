@@ -35,7 +35,6 @@ async function main(): Promise<void> {
     itsOver: {
       allowlist: config.allowlistChatIds,
       stateStore,
-      gifUrl: config.gifUrl,
     },
   });
 

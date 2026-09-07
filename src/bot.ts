@@ -40,7 +40,7 @@ export function createBot(token: string, options: CreateBotOptions): Bot {
 export const BOT_COMMANDS = [
   {
     command: "itsover",
-    description: "Send the It's Over GIF",
+    description: "Show hours until the next It's Over GIF",
   },
 ] as const;
 
